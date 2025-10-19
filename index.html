@@ -1,53 +1,68 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Charitha PWA</title>
-  <link rel="manifest" href="/manifest.json">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Demo App</title>
+<link rel="manifest" href="manifest.json">
+<style>
+body { font-family: sans-serif; padding: 20px; }
+#a2hs-banner { display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #fff; padding: 15px 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); z-index: 999; }
+#a2hs-banner button { margin-left: 10px; background: #007bff; color: #fff; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
+</style>
 </head>
 <body>
-  <h1>Charitha PWA</h1>
-  <button id="a2hsBtn" style="display:none">📲 Add to Home Screen</button>
+<h1>Welcome to My Demo App 🌐</h1>
 
-  <script>
-      <button id="testAdd">Click to Add</button>
+
+<div id="a2hs-banner">
+Add this site to your home screen?
+<button id="addBtn">Add</button>
+<button id="closeBtn">Later</button>
+</div>
+
+
+<button id="testAdd">Click to Add</button>
+
+
 <script>
 let deferredPrompt;
+const banner = document.getElementById('a2hs-banner');
+const addBtn = document.getElementById('addBtn');
+const closeBtn = document.getElementById('closeBtn');
+const testBtn = document.getElementById('testAdd');
+
+
 window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
+e.preventDefault();
+deferredPrompt = e;
+banner.style.display = 'block';
 });
-document.getElementById('testAdd').addEventListener('click', () => {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(choice => {
-      if(choice.outcome === 'accepted') alert('Added!');
-      deferredPrompt = null;
-    });
-  } else {
-    alert('Popup not ready. Open in Chrome on Android.');
-  }
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').then(()=>console.log('sw registered'));
-    }
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      document.getElementById('a2hsBtn').style.display = 'inline-block';
-    });
-    document.getElementById('a2hsBtn').addEventListener('click', async () => {
-      if(!deferredPrompt) return;
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      document.getElementById('a2hsBtn').style.display = 'none';
-    });
-  </script>
 
+
+addBtn.addEventListener('click', () => {
+banner.style.display = 'none';
+if (deferredPrompt) {
+deferredPrompt.prompt();
+deferredPrompt.userChoice.then(choice => { if(choice.outcome==='accepted') alert('App added!'); deferredPrompt = null; });
+}
 });
+
+
+closeBtn.addEventListener('click', () => banner.style.display='none');
+
+
+testBtn.addEventListener('click', () => {
+if (deferredPrompt) {
+deferredPrompt.prompt();
+deferredPrompt.userChoice.then(choice => { if(choice.outcome==='accepted') alert('App added!'); deferredPrompt=null; });
+} else { alert('Popup not ready. Open in Chrome on Android.'); }
+});
+
+
+if ('serviceWorker' in navigator) {
+navigator.serviceWorker.register('sw.js').then(() => console.log('Service Worker registered'));
+}
 </script>
-
 </body>
 </html>
