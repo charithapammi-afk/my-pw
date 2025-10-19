@@ -11,6 +11,23 @@
   <button id="a2hsBtn" style="display:none">📲 Add to Home Screen</button>
 
   <script>
+      <button id="testAdd">Click to Add</button>
+<script>
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+});
+document.getElementById('testAdd').addEventListener('click', () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(choice => {
+      if(choice.outcome === 'accepted') alert('Added!');
+      deferredPrompt = null;
+    });
+  } else {
+    alert('Popup not ready. Open in Chrome on Android.');
+  }
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js').then(()=>console.log('sw registered'));
     }
@@ -28,23 +45,7 @@
       document.getElementById('a2hsBtn').style.display = 'none';
     });
   </script>
-  <button id="testAdd">Click to Add</button>
-<script>
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-});
-document.getElementById('testAdd').addEventListener('click', () => {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(choice => {
-      if(choice.outcome === 'accepted') alert('Added!');
-      deferredPrompt = null;
-    });
-  } else {
-    alert('Popup not ready. Open in Chrome on Android.');
-  }
+
 });
 </script>
 
